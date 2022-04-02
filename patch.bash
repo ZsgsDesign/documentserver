@@ -9,7 +9,7 @@ else
     add-apt-repository ppa:deadsnakes/ppa && apt-get update && apt-get install -y python3-dev build-essential
     wget https://bootstrap.pypa.io/get-pip.py
     python3 get-pip.py
-    pip install pycrypto
+    pip install pycryptodome 
     rm -f /var/www/onlyoffice/Data/license.lic
     echo "Patching docservice and convert"
     python3 patch.py
