@@ -32,7 +32,7 @@ RUN git clone --quiet --branch $tag --depth 1 https://github.com/ONLYOFFICE/serv
 
 COPY server.patch /build/
 
-RUN cd /build/server   && git apply /build/server.patch
+RUN cd /build/server   && git apply --ignore-whitespace /build/server.patch
 
 ## Build
 FROM clone-stage as build-stage
