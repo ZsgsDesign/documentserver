@@ -6,7 +6,7 @@ if test -f "$FILE"; then
     echo "Patching docservice and convert"
     echo "skipped."
 else
-    apt-get update && apt-get install -y python3
+    apt-get update && apt-get install -y python3-dev
     wget https://bootstrap.pypa.io/get-pip.py
     python3 get-pip.py
     pip install pycrypto
