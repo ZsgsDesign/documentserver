@@ -1,16 +1,16 @@
-From 3c32621b05c783bca1772b6a3669092ffe553701 Mon Sep 17 00:00:00 2001
+From 6160c7a44933d986e88c45f9b0c5abc0cac71685 Mon Sep 17 00:00:00 2001
 From: ZsgsDesign <zsgsdesign@gmail.com>
-Date: Sun, 3 Apr 2022 15:42:31 +0800
+Date: Sun, 3 Apr 2022 16:12:37 +0800
 Subject: [PATCH] patches for ultimate experience
 
 ---
  Common/sources/constants.js              |  2 +-
- Common/sources/license.js                | 18 +++++++++---------
+ Common/sources/license.js                | 20 ++++++++++----------
  DocService/sources/DocsCoServer.js       |  5 ++---
  DocService/sources/server.js             |  1 -
  FileConverter/sources/convertermaster.js |  1 -
  Makefile                                 |  2 +-
- 6 files changed, 13 insertions(+), 16 deletions(-)
+ 6 files changed, 14 insertions(+), 17 deletions(-)
 
 diff --git a/Common/sources/constants.js b/Common/sources/constants.js
 index a6b553b..21854b8 100644
@@ -26,7 +26,7 @@ index a6b553b..21854b8 100644
  
  exports.AVS_OFFICESTUDIO_FILE_UNKNOWN =  0x0000;
 diff --git a/Common/sources/license.js b/Common/sources/license.js
-index 3f84ab7..80bc973 100644
+index 3f84ab7..5211116 100644
 --- a/Common/sources/license.js
 +++ b/Common/sources/license.js
 @@ -34,7 +34,7 @@
@@ -38,8 +38,12 @@ index 3f84ab7..80bc973 100644
  const oBuildDate = new Date(buildDate);
  
  exports.readLicense = function*() {
-@@ -45,19 +45,19 @@ exports.readLicense = function*() {
- 		count: 1,
+@@ -42,22 +42,22 @@ exports.readLicense = function*() {
+ 	var now = new Date();
+ 	var startDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));//first day of current month
+ 	return [{
+-		count: 1,
++		count: 128, // 128 workers supported
  		type: c_LR.Success,
  		light: false,
 -		packageType: constants.PACKAGE_TYPE_OS,
@@ -67,7 +71,7 @@ index 3f84ab7..80bc973 100644
 -exports.packageType = constants.PACKAGE_TYPE_OS;
 +exports.packageType = constants.PACKAGE_TYPE_I;
 diff --git a/DocService/sources/DocsCoServer.js b/DocService/sources/DocsCoServer.js
-index 8e56486..9bc919b 100644
+index 8e56486..353afc1 100644
 --- a/DocService/sources/DocsCoServer.js
 +++ b/DocService/sources/DocsCoServer.js
 @@ -166,7 +166,7 @@ let connections = []; // Активные соединения
@@ -75,7 +79,7 @@ index 8e56486..9bc919b 100644
  let pubsub;
  let queue;
 -let licenseInfo = {type: constants.LICENSE_RESULT.Error, light: false, branding: false, customization: false, plugins: false};
-+let licenseInfo = license.readLicense().next().value;
++let licenseInfo = license.readLicense().next().value[0];
  let licenseOriginal = null;
  let shutdownFlag = false;
  let expDocumentsStep = gc.getCronStep(cfgExpDocumentsCron);
