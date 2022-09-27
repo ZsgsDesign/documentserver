@@ -1,23 +1,9 @@
-From 6160c7a44933d986e88c45f9b0c5abc0cac71685 Mon Sep 17 00:00:00 2001
-From: ZsgsDesign <zsgsdesign@gmail.com>
-Date: Sun, 3 Apr 2022 16:12:37 +0800
-Subject: [PATCH] patches for ultimate experience
-
----
- Common/sources/constants.js              |  2 +-
- Common/sources/license.js                | 20 ++++++++++----------
- DocService/sources/DocsCoServer.js       |  5 ++---
- DocService/sources/server.js             |  1 -
- FileConverter/sources/convertermaster.js |  1 -
- Makefile                                 |  2 +-
- 6 files changed, 14 insertions(+), 17 deletions(-)
-
 diff --git a/Common/sources/constants.js b/Common/sources/constants.js
-index a6b553b..21854b8 100644
+index 65d4c6f..df96adb 100644
 --- a/Common/sources/constants.js
 +++ b/Common/sources/constants.js
-@@ -74,7 +74,7 @@ exports.LICENSE_RESULT = {
-   ExpiredLimited: 11
+@@ -83,7 +83,7 @@ exports.LICENSE_RESULT = {
+   UsersViewCountOS: 15
  };
  
 -exports.LICENSE_CONNECTIONS = 20;
@@ -26,7 +12,7 @@ index a6b553b..21854b8 100644
  
  exports.AVS_OFFICESTUDIO_FILE_UNKNOWN =  0x0000;
 diff --git a/Common/sources/license.js b/Common/sources/license.js
-index 3f84ab7..5211116 100644
+index fbd5ec8..da08375 100644
 --- a/Common/sources/license.js
 +++ b/Common/sources/license.js
 @@ -34,7 +34,7 @@
@@ -38,7 +24,7 @@ index 3f84ab7..5211116 100644
  const oBuildDate = new Date(buildDate);
  
  exports.readLicense = function*() {
-@@ -42,22 +42,22 @@ exports.readLicense = function*() {
+@@ -42,25 +42,25 @@ exports.readLicense = function*() {
  	var now = new Date();
  	var startDate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));//first day of current month
  	return [{
@@ -52,71 +38,26 @@ index 3f84ab7..5211116 100644
 -		branding: false,
 +		branding: true,
  		connections: constants.LICENSE_CONNECTIONS,
+ 		connectionsView: constants.LICENSE_CONNECTIONS,
 -		customization: false,
 +		customization: true,
  		usersCount: 0,
--		usersExpire: constants.LICENSE_EXPIRE_USERS_ONE_DAY,
+ 		usersViewCount: 0,
+ 		usersExpire: constants.LICENSE_EXPIRE_USERS_ONE_DAY,
 -		hasLicense: false,
 -		plugins: false,
-+		usersExpire: new Date("2099-01-01T23:59:59.000Z").getTime() / 1000,
 +		hasLicense: true,
 +		plugins: true,
  		buildDate: oBuildDate,
  		startDate: startDate,
--		endDate: null
-+		endDate: "2099-02-01T00:00:00.000Z"
+-		endDate: null,
++		endDate: "2099-02-01T00:00:00.000Z",
+ 		customerId: ""
  	}, null];
  };
  
 -exports.packageType = constants.PACKAGE_TYPE_OS;
 +exports.packageType = constants.PACKAGE_TYPE_I;
-diff --git a/DocService/sources/DocsCoServer.js b/DocService/sources/DocsCoServer.js
-index 8e56486..353afc1 100644
---- a/DocService/sources/DocsCoServer.js
-+++ b/DocService/sources/DocsCoServer.js
-@@ -166,7 +166,7 @@ let connections = []; // Активные соединения
- let lockDocumentsTimerId = {};//to drop connection that can't unlockDocument
- let pubsub;
- let queue;
--let licenseInfo = {type: constants.LICENSE_RESULT.Error, light: false, branding: false, customization: false, plugins: false};
-+let licenseInfo = license.readLicense().next().value[0];
- let licenseOriginal = null;
- let shutdownFlag = false;
- let expDocumentsStep = gc.getCronStep(cfgExpDocumentsCron);
-@@ -3259,8 +3259,7 @@ exports.install = function(server, callbackFunction) {
-   });
- };
- exports.setLicenseInfo = function(data, original ) {
--  licenseInfo = data;
--  licenseOriginal = original;
-+  logger.debug('Not updating license info', data)
- };
- exports.getLicenseInfo = function() {
-   return licenseInfo;
-diff --git a/DocService/sources/server.js b/DocService/sources/server.js
-index b03e0d0..91e61c2 100644
---- a/DocService/sources/server.js
-+++ b/DocService/sources/server.js
-@@ -137,7 +137,6 @@ try {
- } catch (e) {
- 	logger.warn('Failed to subscribe to plugin folder updates. When changing the list of plugins, you must restart the server. https://nodejs.org/docs/latest/api/fs.html#fs_availability');
- }
--fs.watchFile(configCommon.get('license').get('license_file'), updateLicense);
- setInterval(updateLicense, 86400000);
- 
- // Если захочется использовать 'development' и 'production',
-diff --git a/FileConverter/sources/convertermaster.js b/FileConverter/sources/convertermaster.js
-index 2c4526f..ec07464 100644
---- a/FileConverter/sources/convertermaster.js
-+++ b/FileConverter/sources/convertermaster.js
-@@ -85,7 +85,6 @@ if (cluster.isMaster) {
- 
-   updateLicense();
- 
--  fs.watchFile(configCommon.get('license').get('license_file'), updateLicense);
-   setInterval(updateLicense, 86400000);
- } else {
-   const converter = require('./converter');
 diff --git a/Makefile b/Makefile
 index e8e1308..23f7e2e 100644
 --- a/Makefile
@@ -130,6 +71,3 @@ index e8e1308..23f7e2e 100644
  
  build-date: $(GRUNT_FILES)
  	sed "s|\(const buildVersion = \).*|\1'${PRODUCT_VERSION}';|" -i $(COMMON_DEFINES_JS)
--- 
-2.35.1.windows.2
-
