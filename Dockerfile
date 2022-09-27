@@ -1,5 +1,5 @@
-ARG product_version=7.0.1
-ARG build_number=37
+ARG product_version=7.2.0
+ARG build_number=209
 ARG oo_root='/var/www/onlyoffice/documentserver'
 
 
@@ -40,8 +40,8 @@ FROM clone-stage as build-stage
 # build server with license checks patched
 WORKDIR /build/server
 RUN make
-RUN pkg /build/build_tools/out/linux_64/onlyoffice/documentserver/server/FileConverter --targets=node10-linux -o /build/converter
-RUN pkg /build/build_tools/out/linux_64/onlyoffice/documentserver/server/DocService --targets=node10-linux --options max_old_space_size=4096 -o /build/docservice
+RUN pkg /build/build_tools/out/linux_64/onlyoffice/documentserver/server/FileConverter --targets=node14-linux -o /build/converter
+RUN pkg /build/build_tools/out/linux_64/onlyoffice/documentserver/server/DocService --targets=node14-linux --options max_old_space_size=4096 -o /build/docservice
 
 ## Final image
 FROM onlyoffice/documentserver:${product_version}.${build_number}
